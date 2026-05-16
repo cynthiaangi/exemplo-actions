@@ -1,0 +1,32 @@
+name: Exemplo de CI # Nome da ação
+
+on:
+  push: # Evento que irá disparar a ação
+    branches: [ main ] # Branch que irá disparar a ação
+
+jobs: # Trabalhos a serem executados
+  build: # Nome do trabalho pode ser qualquer um de sua escolha
+    runs-on: ubuntu-latest # Sistema operacional a ser utilizado
+    steps: # Passos a serem executados
+      - name: Checkout code # Nome do passo, nesse caso, clonar o repositório
+        uses: actions/checkout@v4 # action escolhida para clonar o repositório
+
+      - name: Set up JDK 21 # Configurar JDK 21 para alinhar com pom.xml
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Cache Maven local repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
+
+      - name: Ensure Maven wrapper is executable
+        run: chmod +x mvnw
+
+      - name: Build with Maven (wrapper)
+        run: ./mvnw -B package -DskipTests
