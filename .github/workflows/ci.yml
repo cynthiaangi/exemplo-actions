@@ -1,11 +1,19 @@
 name: Exemplo de CI # Nome da ação
 
 on:
-  pull_request: # Evento que irá disparar a ação
-    branches: 
-      - main # Ramo que irá disparar a ação
+  pull_request: # Evento que irá disparar a ação (para execução normal)
+    branches:
+      - main
       - develop
-    types: [opened, reopened] # Tipos de evento que irão disparar a ação
+    types: [opened, reopened]
+  # Usar pull_request_target quando for necessário acessar secrets em PRs de forks.
+  # ATENÇÃO: esse evento executa o workflow no contexto do repositório base (pode executar código
+  # com permissões mais elevadas). Revise os jobs que rodarão com secrets antes de habilitar.
+  pull_request_target:
+    branches:
+      - main
+      - develop
+    types: [opened, reopened]
 
 jobs: # Trabalhos a serem executados
   build: # Nome do trabalho pode ser qualquer um de sua escolha
