@@ -16,8 +16,23 @@ class CalculadoraServiceTests {
 
     @Test
     void deveLancarAoDividirPorZero() {
-        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> service.dividir(10, 0));
-        assertEquals("Divisão por zero não permitida", ex.getReason());
+        // Arrange
+        CalculadoraService calculadoraService = new CalculadoraService();
+        double a = 10;
+        double b = 0;
+        var expectedMessage = "400 BAD_REQUEST \"Divisão por zero não permitida\"";
+
+        // Assert
+        ResponseStatusException exception = assertThrows(
+                ResponseStatusException.class,
+                () -> {
+                    // Act
+                    calculadoraService.dividir(a, b);
+                }
+        );
+
+        // Assert
+        assertEquals(expectedMessage, exception.getMessage());
     }
 }
 
